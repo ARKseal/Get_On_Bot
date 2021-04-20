@@ -23,7 +23,7 @@ DRIVE = Drive_Communicator(_FILEID)
 TASK = Tasklist()
 VALUES = Json_Handler()
 
-_code_website = "https://github.com/ARKseal/ARKseal.github.io"
+_code_website = "https://github.com/ARKseal/Get_On_Bot"
 
 _bot = _Bot(command_prefix='?')
 
