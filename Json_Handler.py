@@ -18,7 +18,7 @@ class Json_Handler(_threading.Thread):
     def __getitem__(self, key):
         if key in self.VALUES:
             return self.VALUES[key]
-        raise KeyError()
+        raise KeyError("Key '{}' is not found".format(key))
     
     def __setitem__(self, key, value):
         self.VALUES[key] = value

@@ -4,7 +4,7 @@ import os as _os
 from discord.ext.commands import Bot as _Bot
 from dotenv import load_dotenv as _load_dotenv
 
-from Drive_Communicator import Drive_Communicator
+from Firebase_Connector import Firebase_Connector
 from Json_Handler import Json_Handler
 from Task_List import Tasklist
 
@@ -15,11 +15,15 @@ async def _spammer(ctx, count: int, response: str):
         await _asyncio.sleep(1)
 
 _load_dotenv()
+
 _TOKEN = _os.getenv('DISCORD_TOKEN')
-_FILEID = _os.getenv('FILE_ID')
 _BOTOWNER = _os.getenv('BOT_OWNER')
 
-DRIVE = Drive_Communicator(_FILEID)
+print(_os.getenv('DATABASE_URL'))
+_DATABASE_URL = _os.getenv('DATABASE_URL')
+_GOOGLE_APPLICATION_CREDENTIALS = _os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+
+FIREBASE = Firebase_Connector(_GOOGLE_APPLICATION_CREDENTIALS, _DATABASE_URL, 'data.json')
 TASK = Tasklist()
 VALUES = Json_Handler()
 
@@ -93,7 +97,7 @@ async def _change(ctx, command: str, value: int):
     guild = ctx.guild
     print(str(ctx.author))
     print(str(guild.owner))
-    if str(ctx.author) != str(guild.owner) and str(ctx.author) != _BOTOWNER:
+    if (not ctx.message.author.guild_permissions.administrator) and str(ctx.author) != _BOTOWNER:
         await ctx.send("Sorry, you do not have the permission to change command values")
         return
 
@@ -103,6 +107,7 @@ async def _change(ctx, command: str, value: int):
             old_val = VALUES[str(guild.id)][command][:]
             VALUES[str(guild.id)][command][1] = value
             await ctx.send("The value '{o[0]}' in the command '{c}' changed from '{o[1]}' to '{v}'".format(o=old_val,c=command,v=value))
+            FIREBASE.sendData()
         else:
             await ctx.send("There are no changeable values in the command '{}'".format(command))
     else:
