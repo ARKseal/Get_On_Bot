@@ -15,9 +15,11 @@ class Firebase_Connector(object):
         self.getData()
 
     def getData(self):
+        print('get')
         self._download()
 
     def sendData(self):
+        print('send')
         self._upload()
 
     def _download(self):

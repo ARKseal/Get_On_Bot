@@ -107,6 +107,7 @@ async def _change(ctx, command: str, value: int):
             old_val = VALUES[str(guild.id)][command][:]
             VALUES[str(guild.id)][command][1] = value
             await ctx.send("The value '{o[0]}' in the command '{c}' changed from '{o[1]}' to '{v}'".format(o=old_val,c=command,v=value))
+            VALUES.saveChanges()
             FIREBASE.sendData()
         else:
             await ctx.send("There are no changeable values in the command '{}'".format(command))
